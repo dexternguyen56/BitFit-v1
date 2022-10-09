@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
-class HealthItemAdapter(private val healthList: MutableList<HealthItem>): RecyclerView.Adapter<HealthItemAdapter.ViewHolder>() {
+class HealthItemAdapter(private val healthList: MutableList<HealthEntity>): RecyclerView.Adapter<HealthItemAdapter.ViewHolder>() {
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

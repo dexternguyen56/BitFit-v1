@@ -11,10 +11,16 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
 
 class MainActivity : AppCompatActivity() {
+
+    private val healthItems = mutableListOf<HealthEntity>()
 
 
 
@@ -23,15 +29,39 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        var healthItems: MutableList<HealthItem> = ArrayList()
-
 
         val addButton = findViewById<Button>(R.id.add_button)
         var healthRv = findViewById<RecyclerView>(R.id.healthRv)
 
 
+//        lifecycleScope.launch(IO){
+//            val HealthDao = (application as HealthApplication).db.HealthDAO()
+//            healthItems = HealthDao.getAll()
+//
+//        }
+
+
 
         val adapter = HealthItemAdapter(healthItems)
+
+        lifecycleScope.launch {
+            (application as HealthApplication).db.HealthDAO().getAll().collect { databaseList ->
+                databaseList.map { entity ->
+                    HealthEntity(
+                        entity.title,
+                        entity.calories,
+                    )
+                }.also { mappedList ->
+                    //healthItems.clear()
+                    healthItems.addAll(mappedList)
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
+
+
+
+
 
         healthRv.adapter = adapter
 
@@ -48,10 +78,17 @@ class MainActivity : AppCompatActivity() {
                 if (data != null) {
                     val resultFood = data.extras!!.getString("new_food")
                     val resultCal = data.extras!!.getString("new_cal")
-                    val item = HealthItem(resultFood,resultCal)
+                    val item = HealthEntity(resultFood ,resultCal)
 
-                    healthItems.add(item)
-                    adapter.notifyDataSetChanged()
+//                    healthItems.add(item)
+                    lifecycleScope.launch(IO) {
+                        (application as HealthApplication).db.HealthDAO()
+                            .insert(item)
+                        //adapter.notifyDataSetChanged()
+                    }
+
+
+
                 }
             }
         }
