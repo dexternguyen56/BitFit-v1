@@ -1,5 +1,9 @@
 package com.codepath.fitbit
 
+import android.graphics.Typeface
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -40,9 +44,12 @@ class HealthItemAdapter(private val healthList: MutableList<HealthEntity>): Recy
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
 
         val health = healthList[position]
+        val des = SpannableStringBuilder()
+        val spanFlag = Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
 
+        des.append(health.title, StyleSpan(Typeface.BOLD), spanFlag)
         holder.caloriesTextView.text = health.calories
-        holder.titleTextView.text = health.title
+        holder.titleTextView.text = des
 
 
     }

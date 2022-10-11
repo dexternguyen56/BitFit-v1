@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.SpannableStringBuilder
+import android.text.Spanned
 import android.util.Log
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
@@ -52,7 +54,7 @@ class MainActivity : AppCompatActivity() {
                         entity.calories,
                     )
                 }.also { mappedList ->
-                    //healthItems.clear()
+                    healthItems.clear()
                     healthItems.addAll(mappedList)
                     adapter.notifyDataSetChanged()
                 }
